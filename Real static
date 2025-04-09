@@ -1,0 +1,67 @@
+XMLtoJSONAdapter/
+├── lib/
+│   └── json-20210307.jar
+├── Main.java
+├── JSONData.java
+├── XMLData.java
+├── XMLSoftware.java
+└── XMLToJSONDataAdapter.java
+
+
+public interface JSONData {
+    void readJSONData();
+}
+
+public interface XMLData {
+    String readXMLData();
+}
+
+public class XMLSoftware implements XMLData {
+    @Override
+    public String readXMLData() {
+        // Static XML data
+        return "<product><id>101</id><name>Laptop</name><price>55000</price></product>";
+    }
+}
+
+
+import org.json.JSONObject;
+import org.json.XML;
+
+public class XMLToJSONDataAdapter implements JSONData {
+    private XMLData xmlData;
+
+    public XMLToJSONDataAdapter(XMLData xmlData) {
+        this.xmlData = xmlData;
+    }
+
+    @Override
+    public void readJSONData() {
+        String xml = xmlData.readXMLData();
+        System.out.println("Original XML Data:");
+        System.out.println(xml);
+
+        try {
+            JSONObject json = XML.toJSONObject(xml);
+            System.out.println("\nConverted JSON Data:");
+            System.out.println(json.toString(4));
+        } catch (Exception e) {
+            System.out.println("Conversion Error: " + e.getMessage());
+        }
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        XMLData xmlSoftware = new XMLSoftware();
+        JSONData adapter = new XMLToJSONDataAdapter(xmlSoftware);
+        adapter.readJSONData();
+    }
+}
+
+javac -cp ".;lib/json-20210307.jar" *.java   
+ java -cp ".;lib/json-20210307.jar" Main        
+
+
+
