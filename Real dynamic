@@ -1,0 +1,74 @@
+XMLtoJSONAdapter/
+├── lib/
+│   └── json-20210307.jar
+├── Main.java
+├── JSONData.java
+├── XMLData.java
+├── XMLSoftware.java
+└── XMLToJSONDataAdapter.java
+
+
+public interface JSONData {
+    void readJSONData();
+}
+
+public interface XMLData {
+    String readXMLData();
+}
+
+public class XMLSoftware implements XMLData {
+    private String xml;
+    public XMLSoftware(String xml) {
+        this.xml = xml;
+    }
+    @Override
+    public String readXMLData() {
+        return xml;
+    }
+}
+
+
+
+import org.json.JSONObject;
+import org.json.XML;
+public class XMLToJSONDataAdapter implements JSONData {
+    private XMLData xmlData;
+    public XMLToJSONDataAdapter(XMLData xmlData) {
+        this.xmlData = xmlData;
+    }
+    @Override
+    public void readJSONData() {
+        String xml = xmlData.readXMLData();
+        System.out.println("\nOriginal XML Data:");
+        System.out.println(xml);
+        try {
+            JSONObject jsonObject = XML.toJSONObject(xml);
+            System.out.println("\nConverted JSON Data:");
+         System.out.println(jsonObject.toString(4));
+        } catch (Exception e) {
+            System.out.println("Error converting XML to JSON: " + e.getMessage());
+        }
+    }
+}
+
+
+
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter XML Data (single line or compact):");
+        String xmlInput = scanner.nextLine();
+        XMLData xmlSoftware = new XMLSoftware(xmlInput);
+        JSONData adapter = new XMLToJSONDataAdapter(xmlSoftware);
+        adapter.readJSONData();
+        scanner.close();
+    }
+}
+
+
+javac -cp ".;lib/json-20210307.jar" *.java   
+ java -cp ".;lib/json-20210307.jar" Main        
+
+
+
